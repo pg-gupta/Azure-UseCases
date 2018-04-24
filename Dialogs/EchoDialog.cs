@@ -21,7 +21,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
-
+            context.Call(new SimpleNoteDialog(), AfterLuis);
             if (message.Text == "reset")
             {
                 PromptDialog.Confirm(
@@ -36,6 +36,12 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 await context.PostAsync($"{this.count++}: You said {message.Text}");
                 context.Wait(MessageReceivedAsync);
             }
+        }
+
+        public Task AfterLuis(IDialogContext context, IAwaitable<object> argument)
+        {
+            context.Wait(MessageReceivedAsync);
+            return Task.CompletedTask;
         }
 
         public async Task AfterResetAsync(IDialogContext context, IAwaitable<bool> argument)

@@ -167,6 +167,7 @@
 /Users/Pooja/github/Azure-UseCases/bin/roslyn/VBCSCompiler.exe.config
 /Users/Pooja/github/Azure-UseCases/bin/SimpleEchoBot.dll
 /Users/Pooja/github/Azure-UseCases/bin/SimpleEchoBot.pdb
+/Users/Pooja/github/Azure-UseCases/bin/AdaptiveCards.dll
 /Users/Pooja/github/Azure-UseCases/bin/Autofac.dll
 /Users/Pooja/github/Azure-UseCases/bin/Chronic.dll
 /Users/Pooja/github/Azure-UseCases/bin/EntityFramework.dll
@@ -190,6 +191,7 @@
 /Users/Pooja/github/Azure-UseCases/bin/Microsoft.Rest.ClientRuntime.dll
 /Users/Pooja/github/Azure-UseCases/bin/Microsoft.WindowsAzure.Configuration.dll
 /Users/Pooja/github/Azure-UseCases/bin/Microsoft.WindowsAzure.Storage.dll
+/Users/Pooja/github/Azure-UseCases/bin/MySql.Data.dll
 /Users/Pooja/github/Azure-UseCases/bin/Newtonsoft.Json.dll
 /Users/Pooja/github/Azure-UseCases/bin/System.IdentityModel.Tokens.Jwt.dll
 /Users/Pooja/github/Azure-UseCases/bin/System.Net.Http.Formatting.dll
@@ -224,6 +226,7 @@
 /Users/Pooja/github/Azure-UseCases/bin/System.Spatial.xml
 /Users/Pooja/github/Azure-UseCases/bin/System.Web.Http.xml
 /Users/Pooja/github/Azure-UseCases/bin/System.Web.Http.WebHost.xml
+/Users/Pooja/github/Azure-UseCases/bin/MySql.Data.xml
 /Users/Pooja/github/Azure-UseCases/bin/ar/Microsoft.Bot.Builder.resources.dll
 /Users/Pooja/github/Azure-UseCases/bin/cs/Microsoft.Bot.Builder.resources.dll
 /Users/Pooja/github/Azure-UseCases/bin/de-dE/Microsoft.Bot.Builder.resources.dll
@@ -273,9 +276,7 @@
 /Users/Pooja/github/Azure-UseCases/bin/ru/System.Spatial.resources.dll
 /Users/Pooja/github/Azure-UseCases/bin/zh-Hans/System.Spatial.resources.dll
 /Users/Pooja/github/Azure-UseCases/bin/zh-Hant/System.Spatial.resources.dll
-/Users/Pooja/github/Azure-UseCases/obj/Debug/Microsoft.Bot.Sample.SimpleEchoBot.csprojResolveAssemblyReference.cache
 /Users/Pooja/github/Azure-UseCases/obj/Debug/Microsoft.Bot.Sample.SimpleEchoBot.csproj.CoreCompileInputs.cache
 /Users/Pooja/github/Azure-UseCases/obj/Debug/SimpleEchoBot.dll
 /Users/Pooja/github/Azure-UseCases/obj/Debug/SimpleEchoBot.pdb
-/Users/Pooja/github/Azure-UseCases/bin/MySql.Data.dll
-/Users/Pooja/github/Azure-UseCases/bin/MySql.Data.xml
+/Users/Pooja/github/Azure-UseCases/obj/Debug/Microsoft.Bot.Sample.SimpleEchoBot.csprojResolveAssemblyReference.cache

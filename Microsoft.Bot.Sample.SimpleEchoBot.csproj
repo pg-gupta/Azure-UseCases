@@ -178,6 +178,9 @@
     <Reference Include="System.Management" />
     <Reference Include="System.Runtime" />
     <Reference Include="System.Transactions" />
+    <Reference Include="AdaptiveCards">
+      <HintPath>packages\AdaptiveCards.1.0.0\lib\net452\AdaptiveCards.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="default.htm" />
@@ -214,6 +217,10 @@
     <None Include="docs\MySqlConnection.xml" />
     <None Include="docs\MySqlCommandBuilder.xml" />
     <None Include="docs\MySqlCommand.xml" />
+    <None Include="AdaptiveCards\MyCard.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AdaptiveCards\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

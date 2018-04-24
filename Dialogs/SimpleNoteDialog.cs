@@ -1,17 +1,29 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Bot.Builder.Luis.Models;
+using System;
+using AdaptiveCards;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using System.Web.Http;
+
+using Autofac;
+
+using Microsoft.Bot.Builder.Dialogs.Internals;
+using Microsoft.Bot.Connector;
+using Newtonsoft.Json;
 
 
 namespace Microsoft.Bot.Sample.SimpleEchoBot
 {
     [LuisModel("117d2216-c908-4bac-95c2-fa550627be38", "ecb5f3dbe980438099ca7db16c5b25d9", domain: "westus.api.cognitive.microsoft.com")]
     [Serializable]
-    public class SimpleNoteDialog : LuisDialog<object>
+    public class SimpleNoteDialog : LuisDialog<object>,IDialog<object>
     {
 
         // Store notes in a dictionary that uses the title as a key
@@ -22,6 +34,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         // Name of note title entity
         public const string Entity_Note_Title = "Note.Title";
 
+        List<string> diseases = null;
         /// <summary>
         /// This method overload inspects the result from LUIS to see if a title entity was detected, and finds the note with that title, or the note with the default title, if no title entity was found.
         /// </summary>
@@ -65,13 +78,14 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         /// </summary>
         /// <param name="context">Dialog context.</param>
         /// <param name="result">The result from LUIS.</param>
-        [LuisIntent("")]
+        [LuisIntent("Greeting")]
         public async Task None(IDialogContext context, LuisResult result)
         {
             
             DBConnect dBConnect = new DBConnect();
-            string message = $"I'm the Notes bot. I can understand requests to create, delete, and read notes. \n\n Detected intent: " + string.Join(", ", result.Intents.Select(i => i.Intent)) + string.Join(", ", result.Entities.Select(i => i.Entity));
+            string message = "Hello " + string.Join(", ", result.Entities.Select(i => i.Entity));
 
+            message += "How are you?";
             dBConnect.OpenConnection();
             List<string> list=  dBConnect.getData();
             message += string.Join(",", list);
@@ -89,21 +103,48 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         [LuisIntent("Sick")]
         public async Task Sick(IDialogContext context, LuisResult result){
 
-
+            string message = "Do not worry! I can help you.\n Tell me how are you feeling or tell me your symptoms?";
             var symptoms = result.Entities.Select(x => x.Entity);
-            await Task.CompletedTask;                       
+            await context.PostAsync(message);
+            context.Wait(MessageReceived);                      
         }
 
         [LuisIntent("Symptoms")]
         public async Task Symptoms(IDialogContext context, LuisResult result)
         {
+            string message = "You might be suffering from ";
 
-          var symptoms = result.Entities.Select(x => x.Entity);
-
-            string message = string.Join(",", symptoms);
+            var symptoms = result.Entities.Select(x => x.Entity).ToList();
+            DBConnect dBConnect = new DBConnect();
+            dBConnect.OpenConnection();
+            diseases = dBConnect.getDiseases(symptoms);
+            message += string.Join(",", diseases);
+            dBConnect.CloseConnection();
             await  context.PostAsync(message);
             context.Wait(MessageReceived);
           
+
+        }
+
+        [LuisIntent("Medicine")]
+        public async Task Medicine(IDialogContext context, LuisResult result)
+        {
+            string message = "";
+            if (diseases == null)
+                message = "Please tell me your symptoms first";
+            else
+            {
+                message = "You may take following medicines ";
+                DBConnect dBConnect = new DBConnect();
+                dBConnect.OpenConnection();
+                List<string> list = dBConnect.getMedicines(diseases);
+                message += string.Join(",", list);
+                dBConnect.CloseConnection();
+            }
+
+            await context.PostAsync(message);
+            context.Wait(MessageReceived);
+
 
         }
         /// <summary>
@@ -253,6 +294,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         public SimpleNoteDialog(ILuisService service)
             : base(service)
         {
+            
         }
 
         [Serializable]
