@@ -221,6 +221,7 @@
     <None Include="docs\MySqlCommandBuilder.xml" />
     <None Include="docs\MySqlCommand.xml" />
     <None Include="AdaptiveCards\MyCard.json" />
+    <None Include="MyCard.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AdaptiveCards\" />

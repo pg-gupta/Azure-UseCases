@@ -8,6 +8,14 @@ using System;
 using System.Net.Http;
 using Microsoft.Bot.Connector;
 using SimpleEchoBot.Models;
+using AdaptiveCards;
+using System.Web;
+using System.Web.Http;
+
+using System.ComponentModel.DataAnnotations;
+using System.Threading;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace Microsoft.Bot.Sample.SimpleEchoBot
 {
@@ -31,11 +39,41 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         [LuisIntent("Greeting")]
         public async Task Greeting(IDialogContext context, LuisResult result)
         {
+            Activity reply = ((Activity)context.Activity).CreateReply();
+            // read the json in from our file
+            string path = Path.Combine(HttpRuntime.AppDomainAppPath, "/AdaptiveCards/MyCard.json");
+            string json1;
+            using (StreamReader r = new StreamReader("MyCard.json"))
+            {
+                 json1 = r.ReadToEnd();
+                AdaptiveCards.AdaptiveCard card = JsonConvert.DeserializeObject<AdaptiveCards.AdaptiveCard>(json1);
+                reply.Attachments.Add(new Attachment
+                {
+                    ContentType = AdaptiveCard.ContentType,
+                    Content = card
+                });
+               // List<Item> items = JsonConvert.DeserializeObject<List<Item>>(json);
+            }
 
-            DBConnect dBConnect = new DBConnect();
-            string message = "Hello " + string.Join(", ", result.Entities.Select(i => i.Entity));
-            message += " How are you?";
-            await context.PostAsync(message);
+
+            //string path1 = "~\\AdaptiveCards\\MyCard.json";
+           // string json = File.ReadAllText(HttpContext.Current.Request.MapPath(path));
+            // use Newtonsofts JsonConvert to deserialized the json into a C# AdaptiveCard object
+           // AdaptiveCards.AdaptiveCard card = JsonConvert.DeserializeObject<AdaptiveCards.AdaptiveCard>(json);
+            // put the adaptive card as an attachment to the reply message
+            //reply.Attachments.Add(new Attachment
+            //{
+            //    ContentType = AdaptiveCard.ContentType,
+            //    Content = card
+            //});
+           // reply.Attachments.Add(attachment);
+
+            await context.PostAsync(reply, CancellationToken.None);
+
+            //DBConnect dBConnect = new DBConnect();
+            //string message = "Hello " + string.Join(", ", result.Entities.Select(i => i.Entity));
+            //message += " How are you?";
+            //await context.PostAsync(message);
             context.Wait(MessageReceived);
 
         }
