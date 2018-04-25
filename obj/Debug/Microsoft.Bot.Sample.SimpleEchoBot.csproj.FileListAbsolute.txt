@@ -279,4 +279,3 @@
 /Users/Pooja/github/Azure-UseCases/obj/Debug/Microsoft.Bot.Sample.SimpleEchoBot.csproj.CoreCompileInputs.cache
 /Users/Pooja/github/Azure-UseCases/obj/Debug/SimpleEchoBot.dll
 /Users/Pooja/github/Azure-UseCases/obj/Debug/SimpleEchoBot.pdb
-/Users/Pooja/github/Azure-UseCases/obj/Debug/Microsoft.Bot.Sample.SimpleEchoBot.csprojResolveAssemblyReference.cache
