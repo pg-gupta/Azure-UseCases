@@ -100,8 +100,6 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             }
 
             return list;
-
-
         }
 
         internal List<Doctor> getDoctors(List<string> specialization)

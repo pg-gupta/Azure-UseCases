@@ -38,35 +38,34 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         /// <param name="result">The result from LUIS.</param>
         [LuisIntent("Greeting")]
         public async Task Greeting(IDialogContext context, LuisResult result)
-        {
-            Activity reply = ((Activity)context.Activity).CreateReply();
+        {Activity reply = ((Activity)context.Activity).CreateReply();
             // read the json in from our file
-            string path = Path.Combine(HttpRuntime.AppDomainAppPath, "/AdaptiveCards/MyCard.json");
+            //string path = Path.Combine(HttpRuntime.AppDomainAppPath, "/AdaptiveCards/MyCard.json");
             string json1;
             using (StreamReader r = new StreamReader("MyCard.json"))
             {
-                 json1 = r.ReadToEnd();
+                json1 = r.ReadToEnd();
                 AdaptiveCards.AdaptiveCard card = JsonConvert.DeserializeObject<AdaptiveCards.AdaptiveCard>(json1);
                 reply.Attachments.Add(new Attachment
                 {
                     ContentType = AdaptiveCard.ContentType,
                     Content = card
                 });
-               // List<Item> items = JsonConvert.DeserializeObject<List<Item>>(json);
+                // List<Item> items = JsonConvert.DeserializeObject<List<Item>>(json);
             }
 
 
             //string path1 = "~\\AdaptiveCards\\MyCard.json";
-           // string json = File.ReadAllText(HttpContext.Current.Request.MapPath(path));
+            // string json = File.ReadAllText(HttpContext.Current.Request.MapPath(path));
             // use Newtonsofts JsonConvert to deserialized the json into a C# AdaptiveCard object
-           // AdaptiveCards.AdaptiveCard card = JsonConvert.DeserializeObject<AdaptiveCards.AdaptiveCard>(json);
+            // AdaptiveCards.AdaptiveCard card = JsonConvert.DeserializeObject<AdaptiveCards.AdaptiveCard>(json);
             // put the adaptive card as an attachment to the reply message
             //reply.Attachments.Add(new Attachment
             //{
             //    ContentType = AdaptiveCard.ContentType,
             //    Content = card
             //});
-           // reply.Attachments.Add(attachment);
+            // reply.Attachments.Add(attachment);
 
             await context.PostAsync(reply, CancellationToken.None);
 
@@ -107,37 +106,43 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         [LuisIntent("Symptoms")]
         public async Task Symptoms(IDialogContext context, LuisResult result)
         {
-            Activity reply = ((Activity)context.Activity).CreateReply();
-
+           // Activity reply = ((Activity)context.Activity).CreateReply();
+            String message = "";
             var symptoms = result.Entities.Select(x => x.Entity).ToList();
             DBConnect dBConnect = new DBConnect();
             dBConnect.OpenConnection();
             diseases = dBConnect.getDiseases(symptoms);
             if (diseases!=null && diseases.Count>0)
             {
-
-                HeroCard card = new HeroCard
-                {
-                    Subtitle = "You might be suffering from below top 5 Diseases: ",
-                    Images = new List<CardImage> { new CardImage("https://robodoc.blob.core.windows.net/images/disease.jpeg") },
-                };
-                reply.Attachments.Add(card.ToAttachment());
+                message += "You might be suffering below top 5 Diseases:";
 
                 foreach (var disease in diseases)
                 {
-                    HeroCard entityCard = new HeroCard
-                    {
-                        Title = disease.name,
-                        Subtitle = disease.treatment,
-
-                    };
-                    reply.Attachments.Add(entityCard.ToAttachment());
+                    message += "\n\n " + disease.name + "\n\n" + disease.treatment;
                 }
+
+                //HeroCard card = new HeroCard
+                //{
+                //    Subtitle = "You might be suffering from below top 5 Diseases: ",
+                //    Images = new List<CardImage> { new CardImage("https://robodoc.blob.core.windows.net/images/disease.jpeg") },
+                //};
+                //reply.Attachments.Add(card.ToAttachment());
+
+                //foreach (var disease in diseases)
+                //{
+                //    HeroCard entityCard = new HeroCard
+                //    {
+                //        Title = disease.name,
+                //        Subtitle = disease.treatment,
+
+                //    };
+                //    reply.Attachments.Add(entityCard.ToAttachment());
+                //}
             }
             else
-                reply.Text = "Sorry! I could not find any disease to your symptoms";
+                message = "Sorry! I could not find any disease to your symptoms";
             dBConnect.CloseConnection();
-            await context.PostAsync(reply);
+            await context.PostAsync(message);
             context.Wait(MessageReceived);
         }
 
