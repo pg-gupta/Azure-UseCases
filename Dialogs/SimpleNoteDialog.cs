@@ -38,14 +38,15 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         /// <param name="result">The result from LUIS.</param>
         [LuisIntent("Greeting")]
         public async Task Greeting(IDialogContext context, LuisResult result)
-        {Activity reply = ((Activity)context.Activity).CreateReply();
+        {
+            Activity reply = ((Activity)context.Activity).CreateReply();
             // read the json in from our file
             //string path = Path.Combine(HttpRuntime.AppDomainAppPath, "/AdaptiveCards/MyCard.json");
             string json1;
             using (StreamReader r = new StreamReader("MyCard.json"))
             {
                 json1 = r.ReadToEnd();
-                AdaptiveCards.AdaptiveCard card = JsonConvert.DeserializeObject<AdaptiveCards.AdaptiveCard>(json1);
+                AdaptiveCard card = JsonConvert.DeserializeObject<AdaptiveCard>(json1);
                 reply.Attachments.Add(new Attachment
                 {
                     ContentType = AdaptiveCard.ContentType,
