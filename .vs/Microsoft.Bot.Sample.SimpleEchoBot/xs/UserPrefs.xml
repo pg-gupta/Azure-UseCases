@@ -1,21 +1,26 @@
 ﻿<Properties StartupConfiguration="{9C7E3A46-B60F-4052-9A21-DC8D1A942216}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Web.config">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Controllers/DBConnect.cs">
     <Files>
       <File FileName="Controllers/MessagesController.cs" Line="25" Column="82" />
-      <File FileName="Dialogs/EchoDialog.cs" Line="19" Column="10" />
-      <File FileName="Dialogs/SimpleNoteDialog.cs" Line="143" Column="14" />
-      <File FileName="../../../miteshpatekar/Downloads/Lab 3.1 Form Bot/Lab 3.1 Form Bot/Controllers/MessagesController.cs" Line="51" Column="68" />
-      <File FileName="../../../miteshpatekar/Downloads/Lab 3.1 Form Bot/Lab 3.1 Form Bot/Dialogs/AskLuis.cs" Line="13" Column="10" />
-      <File FileName="Controllers/DBConnect.cs" Line="111" Column="1" />
-      <File FileName="App_Start/WebApiConfig.cs" Line="1" Column="1" />
-      <File FileName="packages.config" Line="1" Column="1" />
-      <File FileName="Web.config" Line="1" Column="1" />
+      <File FileName="Dialogs/SimpleNoteDialog.cs" Line="186" Column="66" />
+      <File FileName="../../../miteshpatekar/Downloads/Lab 3.1 Form Bot/Lab 3.1 Form Bot/Dialogs/QnaDialog.cs" Line="78" Column="47" />
+      <File FileName="Web.config" Line="16" Column="48" />
+      <File FileName="Models/Medicine.cs" Line="17" Column="43" />
+      <File FileName="Models/Disease.cs" Line="18" Column="47" />
+      <File FileName="Models/Doctor.cs" Line="12" Column="1" />
+      <File FileName="Controllers/DBConnect.cs" Line="73" Column="140" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/Pooja/github/Azure-UseCases/Controllers/MessagesController.cs" relfile="Controllers/MessagesController.cs" line="11" column="1" />
+      <Breakpoint file="/Users/Pooja/github/Azure-UseCases/Dialogs/SimpleNoteDialog.cs" relfile="Dialogs/SimpleNoteDialog.cs" line="163" column="1" />
+      <Breakpoint file="/Users/Pooja/github/Azure-UseCases/Dialogs/SimpleNoteDialog.cs" relfile="Dialogs/SimpleNoteDialog.cs" line="162" column="1" />
+      <Breakpoint file="/Users/Pooja/github/Azure-UseCases/Dialogs/SimpleNoteDialog.cs" relfile="Dialogs/SimpleNoteDialog.cs" line="159" column="1" />
+      <Breakpoint file="/Users/Pooja/github/Azure-UseCases/Dialogs/SimpleNoteDialog.cs" relfile="Dialogs/SimpleNoteDialog.cs" line="150" column="1" />
+      <Breakpoint file="/Users/Pooja/github/Azure-UseCases/Controllers/DBConnect.cs" relfile="Controllers/DBConnect.cs" line="83" column="1" />
+      <Breakpoint file="/Users/Pooja/github/Azure-UseCases/Controllers/DBConnect.cs" relfile="Controllers/DBConnect.cs" line="98" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

@@ -1,6 +1,7 @@
 ﻿using System;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
+using SimpleEchoBot.Models;
 
 namespace Microsoft.Bot.Sample.SimpleEchoBot
 {
@@ -20,19 +21,6 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
 
         private void Initialize()
         {
-            //server = "www.papademas.net";
-            //database = "510labs";
-            //uid = "db510";
-            //password = "510";
-            //string connectionString;
-            //connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-            //// connectionString = "SERVER=" + server + ";" + "DATABASE=" +
-            //database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-
-            ////   static final String DB_URL = "jdbc:mysql://www.papademas.net:3306/510labs?autoReconnect=true&useSSL=false";
-            ////   static final String USER = "db510", PASS = "510";/
-            //connection = new MySqlConnection(connectionString);
-
             server = "www.papademas.net";
             database = "fp510";
             uid = "fpuser";
@@ -62,51 +50,35 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             connection.Close();
         }
 
-        public List<string> getData()
+       
+        public List<Disease> getDiseases(List<string> symptoms)
         {
-           // string query = "SELECT * FROM p_gupt_tab where id='id12101'";
-            string query = "SELECT * FROM dim_medicine where medicine_id=13";
-
-            MySqlCommand cmd = new MySqlCommand(query, connection);
-            MySqlDataReader dataReader = cmd.ExecuteReader();
-            System.Collections.Generic.List<string> list = new List<string>();
-            //Read the data and store them in the list
-            while (dataReader.Read())
-            {
-                list.Add(dataReader[0] + "");
-                list.Add(dataReader[1] + "");
-                list.Add(dataReader[2] + "");
-            }
-
-            return list;
-
-        }
-
-        public List<string> getDiseases(List<string> symptoms){
             string likesymptom = "";
             foreach (var symptom in symptoms)
             {
                 likesymptom += " description LIKE '%" + symptom + "%' OR";
             }
-            likesymptom=  likesymptom.Remove(likesymptom.Length - 2);
-            string symptomsquery="SELECT disease_id FROM dim_symptoms WHERE"+likesymptom;
+            likesymptom = likesymptom.Remove(likesymptom.Length - 2);
+            string symptomsquery = "SELECT disease_id FROM dim_symptoms WHERE" + likesymptom;
 
-            string query="SELECT  disease_name FROM dim_disease WHERE disease_id IN ("+symptomsquery+")";
+            string query = "SELECT  disease_id,disease_name,treatment,specializationid FROM dim_disease WHERE disease_id IN (" + symptomsquery + ") LIMIT 5";
 
             MySqlCommand cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
-            System.Collections.Generic.List<string> list = new List<string>();
+            System.Collections.Generic.List<Disease> list = new List<Disease>();
             //Read the data and store them in the list
+            Disease disease = null;
             while (dataReader.Read())
             {
-                list.Add(dataReader[0] + "");
+                disease = new Disease(dataReader[0].ToString(), dataReader[1].ToString(), dataReader[2].ToString(), dataReader[3].ToString());
+                list.Add(disease);
             }
 
             return list;
 
         }
 
-        internal List<string> getMedicines(List<string> diseases)
+        internal List<Medicine> getMedicines(List<string> diseases)
         {
             string diseasesString = "";
             foreach (var disease in diseases)
@@ -114,21 +86,47 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 diseasesString += "'" + disease + "' ,";
             }
             diseasesString = diseasesString.Remove(diseasesString.Length - 1);
-            string diseasesquery = "SELECT disease_id FROM dim_disease WHERE disease_name IN ("+diseasesString+")" ;
+            string diseasesquery = "SELECT disease_id FROM dim_disease WHERE disease_name IN (" + diseasesString + ")";
 
-            string query = "SELECT  medicine_name FROM dim_medicine WHERE disease_id IN (" + diseasesquery + ")";
+            string query = "SELECT  medicine_id, medicine_name, description FROM dim_medicine WHERE disease_id IN (" + diseasesquery + ") LIMIT 5";
             MySqlCommand cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
-            System.Collections.Generic.List<string> list = new List<string>();
+            System.Collections.Generic.List<Medicine> list = new List<Medicine>();
             //Read the data and store them in the list
             while (dataReader.Read())
             {
-                list.Add(dataReader[0] + "");
+                Medicine medicine = new Medicine(dataReader[0].ToString(), dataReader[1].ToString(), dataReader[2].ToString());
+                list.Add(medicine);
             }
 
             return list;
 
 
+        }
+
+        internal List<Doctor> getDoctors(List<string> specialization)
+        {
+            string specializationString = "";
+            foreach (var spec in specialization)
+            {
+                specializationString += "'" + spec + "' ,";
+            }
+            specializationString = specializationString.Remove(specializationString.Length - 1);
+            string doctorQuery = "SELECT fname, lname, age, sex, phonenumber,email,address,visithours FROM doctor WHERE specializationid IN (" + specializationString + ") LIMIT 5";
+
+            MySqlCommand cmd = new MySqlCommand(doctorQuery, connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            System.Collections.Generic.List<Doctor> list = new List<Doctor>();
+            //Read the data and store them in the list
+            while (dataReader.Read())
+            {
+                Doctor doctor = new Doctor(dataReader[0].ToString(), dataReader[1].ToString(), dataReader[2].ToString(),
+                                           dataReader[3].ToString(), dataReader[4].ToString(), dataReader[5].ToString(),
+                                           dataReader[6].ToString(), dataReader[7].ToString());
+                list.Add(doctor);
+            }
+
+            return list;
         }
     }
 }
