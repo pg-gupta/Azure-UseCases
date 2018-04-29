@@ -56,8 +56,22 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         public async Task None(IDialogContext context, LuisResult result)
         {
 
-            DBConnect dBConnect = new DBConnect();
             string message = "Sorry I could not get you!";
+            await context.PostAsync(message);
+            context.Wait(MessageReceived);
+
+        }
+
+
+        /// <summary>
+        /// Send a generic help message if an intent without an intent handler is detected.
+        /// </summary>
+        /// <param name="context">Dialog context.</param>
+        /// <param name="result">The result from LUIS.</param>
+        [LuisIntent("Thanks")]
+        public async Task Thanks(IDialogContext context, LuisResult result)
+        {
+            string message = "It was my pleasure serving you!";
             await context.PostAsync(message);
             context.Wait(MessageReceived);
 
