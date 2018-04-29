@@ -39,41 +39,10 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         [LuisIntent("Greeting")]
         public async Task Greeting(IDialogContext context, LuisResult result)
         {
-            Activity reply = ((Activity)context.Activity).CreateReply();
-            // read the json in from our file
-            //string path = Path.Combine(HttpRuntime.AppDomainAppPath, "/AdaptiveCards/MyCard.json");
-            string json1;
-            using (StreamReader r = new StreamReader("MyCard.json"))
-            {
-                json1 = r.ReadToEnd();
-                AdaptiveCard card = JsonConvert.DeserializeObject<AdaptiveCard>(json1);
-                reply.Attachments.Add(new Attachment
-                {
-                    ContentType = AdaptiveCard.ContentType,
-                    Content = card
-                });
-                // List<Item> items = JsonConvert.DeserializeObject<List<Item>>(json);
-            }
-
-
-            //string path1 = "~\\AdaptiveCards\\MyCard.json";
-            // string json = File.ReadAllText(HttpContext.Current.Request.MapPath(path));
-            // use Newtonsofts JsonConvert to deserialized the json into a C# AdaptiveCard object
-            // AdaptiveCards.AdaptiveCard card = JsonConvert.DeserializeObject<AdaptiveCards.AdaptiveCard>(json);
-            // put the adaptive card as an attachment to the reply message
-            //reply.Attachments.Add(new Attachment
-            //{
-            //    ContentType = AdaptiveCard.ContentType,
-            //    Content = card
-            //});
-            // reply.Attachments.Add(attachment);
-
-            await context.PostAsync(reply, CancellationToken.None);
-
-            //DBConnect dBConnect = new DBConnect();
-            //string message = "Hello " + string.Join(", ", result.Entities.Select(i => i.Entity));
-            //message += " How are you?";
-            //await context.PostAsync(message);
+            DBConnect dBConnect = new DBConnect();
+            string message = "Hello " + string.Join(", ", result.Entities.Select(i => i.Entity));
+            message += " How are you?";
+            await context.PostAsync(message);
             context.Wait(MessageReceived);
 
         }
@@ -107,42 +76,32 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         [LuisIntent("Symptoms")]
         public async Task Symptoms(IDialogContext context, LuisResult result)
         {
-           // Activity reply = ((Activity)context.Activity).CreateReply();
             String message = "";
             var symptoms = result.Entities.Select(x => x.Entity).ToList();
             DBConnect dBConnect = new DBConnect();
             dBConnect.OpenConnection();
-            diseases = dBConnect.getDiseases(symptoms);
-            if (diseases!=null && diseases.Count>0)
+            if (symptoms != null)
             {
-                message += "You might be suffering below top 5 Diseases:";
-
-                foreach (var disease in diseases)
+                diseases = dBConnect.getDiseases(symptoms);
+                if (diseases != null && diseases.Count > 0)
                 {
-                    message += "\n\n " + disease.name + "\n\n" + disease.treatment;
+                    message += "You might be suffering below top 5 Diseases:";
+                    int i = 1;
+                    foreach (var disease in diseases)
+                    {
+                        message += "\n\n " + (i++) + " " + disease.name + "\n\n" + "\tTreatment: " + disease.treatment+
+                                                                  "\n\n"+"\tSuggested Test: "+disease.testSuggested+
+                                                                  "\n\n\tDiet Preferred: "+disease.prefferedDiet;
+                    }
                 }
+                else
+                    message = "Sorry! I could not find any disease to your symptoms";
+                dBConnect.CloseConnection();
 
-                //HeroCard card = new HeroCard
-                //{
-                //    Subtitle = "You might be suffering from below top 5 Diseases: ",
-                //    Images = new List<CardImage> { new CardImage("https://robodoc.blob.core.windows.net/images/disease.jpeg") },
-                //};
-                //reply.Attachments.Add(card.ToAttachment());
-
-                //foreach (var disease in diseases)
-                //{
-                //    HeroCard entityCard = new HeroCard
-                //    {
-                //        Title = disease.name,
-                //        Subtitle = disease.treatment,
-
-                //    };
-                //    reply.Attachments.Add(entityCard.ToAttachment());
-                //}
             }
             else
-                message = "Sorry! I could not find any disease to your symptoms";
-            dBConnect.CloseConnection();
+                message = "You did not tell me your symptoms";
+
             await context.PostAsync(message);
             context.Wait(MessageReceived);
         }
@@ -150,9 +109,9 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         [LuisIntent("Medicine")]
         public async Task Medicine(IDialogContext context, LuisResult result)
         {
-            Activity reply = ((Activity)context.Activity).CreateReply();
+            string message = "";
             if (diseases == null)
-                reply.Text = "Please tell me your symptoms first";
+                message = "Please tell me your symptoms first";
             else
             {
 
@@ -160,71 +119,53 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 dBConnect.OpenConnection();
                 List<Medicine> medicines = dBConnect.getMedicines(diseases.Select((arg) => arg.name).Distinct().ToList());
 
-                if (medicines != null && medicines.Count>0)
-                {
-                    HeroCard card = new HeroCard
-                    {
-                        Subtitle = "\nYou may take following top 5 medicines: ",
-                        Images = new List<CardImage> { new CardImage("https://robodoc.blob.core.windows.net/images/medicine.jpg") },
-                    };
-                    reply.Attachments.Add(card.ToAttachment());
 
+                if (medicines != null && medicines.Count > 0)
+                {
+                    message += "You may take following top 5 medicines:";
+                    int i = 1;
                     foreach (var medicine in medicines)
                     {
-                        HeroCard entityCard = new HeroCard
-                        {
-                            Title = medicine.name,
-                            Subtitle = medicine.description,
-
-                        };
-                        reply.Attachments.Add(entityCard.ToAttachment());
+                        message += "\n\n " + (i++) + " " + medicine.name + "\n\n" + "\tDescription: " + medicine.description;
                     }
+
                     dBConnect.CloseConnection();
                 }
                 else
-                    reply.Text = "Sorry, I could not find any medicines.";
+                    message = "Sorry, I could not find any medicines.";
             }
-            await context.PostAsync(reply);
+            await context.PostAsync(message);
             context.Wait(MessageReceived);
         }
 
         [LuisIntent("Doctor")]
         public async Task Doctor(IDialogContext context, LuisResult result)
         {
-            Activity reply = ((Activity)context.Activity).CreateReply();
+            string message = "";
             if (diseases == null)
-                reply.Text = "Please tell me your symptoms first.";
+                message = "Please tell me your symptoms first.";
             else
             {
                 DBConnect dBConnect = new DBConnect();
                 dBConnect.OpenConnection();
                 List<Doctor> doctors = dBConnect.getDoctors(diseases.Select((arg) => arg.specialization).Distinct().ToList());
-                if (doctors != null && doctors.Count>0)
+                if (doctors != null && doctors.Count > 0)
                 {
-                    HeroCard card = new HeroCard
+                    message += "You may consult below top 5 doctors:";
+                    int i = 1;
+                    foreach (var doc in doctors)
                     {
-                        Subtitle = "\nYou may take consultation from following top 5 Doctors: ",
-                        Images = new List<CardImage> { new CardImage("https://robodoc.blob.core.windows.net/images/doctor.jpg") },
-                    };
-                    reply.Attachments.Add(card.ToAttachment());
-
-                    foreach (var doctor in doctors)
-                    {
-                        HeroCard entityCard = new HeroCard
-                        {
-                            Title = doctor.fname + " " + doctor.lname,
-                            Subtitle = doctor.age + "\n" + doctor.sex + "\n" + doctor.phonenumber + "\n" + doctor.visithours + "\n" + doctor.address,
-
-                        };
-                        reply.Attachments.Add(entityCard.ToAttachment());
+                        message += "\n\n " + (i++) + " " + doc.fname + " " + doc.lname + "\n\n\t Phone Number: " + doc.phonenumber +
+                                                              "\n\n\t Address:" + doc.address;
                     }
+
                     dBConnect.CloseConnection();
                 }
                 else
-                    reply.Text = "Sorry, I could not find any Doctors.";
+                    message = "Sorry, I could not find any Doctors.";
             }
 
-            await context.PostAsync(reply);
+            await context.PostAsync(message);
             context.Wait(MessageReceived);
         }
     }

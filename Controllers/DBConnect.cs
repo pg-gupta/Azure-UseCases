@@ -61,7 +61,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             likesymptom = likesymptom.Remove(likesymptom.Length - 2);
             string symptomsquery = "SELECT disease_id FROM dim_symptoms WHERE" + likesymptom;
 
-            string query = "SELECT  disease_id,disease_name,treatment,specializationid FROM dim_disease WHERE disease_id IN (" + symptomsquery + ") LIMIT 5";
+            string query = "SELECT  disease_id,disease_name,treatment,specializationid,test_suggested,preffered_diet FROM dim_disease WHERE disease_id IN (" + symptomsquery + ") LIMIT 5";
 
             MySqlCommand cmd = new MySqlCommand(query, connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
@@ -70,7 +70,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             Disease disease = null;
             while (dataReader.Read())
             {
-                disease = new Disease(dataReader[0].ToString(), dataReader[1].ToString(), dataReader[2].ToString(), dataReader[3].ToString());
+                disease = new Disease(dataReader[0].ToString(), dataReader[1].ToString(), dataReader[2].ToString(), dataReader[3].ToString(),dataReader[4].ToString(),dataReader[5].ToString());
                 list.Add(disease);
             }
 
